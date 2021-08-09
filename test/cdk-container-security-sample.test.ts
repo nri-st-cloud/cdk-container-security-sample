@@ -1,13 +1,27 @@
-import { expect as expectCDK, matchTemplate, MatchStyle } from '@aws-cdk/assert';
+import '@aws-cdk/assert/jest';
 import * as cdk from '@aws-cdk/core';
-import * as CdkContainerSecuritySample from '../lib/cdk-container-security-sample-stack';
+import {CdkContainerSecuritySampleStack} from '../lib/cdk-container-security-sample-stack';
 
-test('Empty Stack', () => {
-    const app = new cdk.App();
-    // WHEN
-    const stack = new CdkContainerSecuritySample.CdkContainerSecuritySampleStack(app, 'MyTestStack');
-    // THEN
-    expectCDK(stack).to(matchTemplate({
-      "Resources": {}
-    }, MatchStyle.EXACT))
+test('Basic Test', () => {
+  const app = new cdk.App();
+  const stack = new CdkContainerSecuritySampleStack(app, 'stack');
+  
+  expect(stack).toHaveResourceLike('AWS::EC2::VPC', {
+    "CidrBlock": "10.0.0.0/16"
+  });
+  expect(stack).toHaveResourceLike('AWS::EC2::Subnet', {
+    "CidrBlock": "10.0.0.0/24"
+  });
+  expect(stack).toHaveResourceLike('AWS::EC2::Subnet', {
+    "CidrBlock": "10.0.1.0/24"
+  });
+  expect(stack).toHaveResourceLike('AWS::EC2::Subnet', {
+    "CidrBlock": "10.0.2.0/24"
+  });
+  expect(stack).toHaveResourceLike('AWS::EC2::Subnet', {
+    "CidrBlock": "10.0.3.0/24"
+  });
+  expect(stack).toHaveResourceLike('AWS::EKS::Nodegroup');
+  expect(stack).toHaveResourceLike('AWS::RDS::DBInstance');
+  
 });
